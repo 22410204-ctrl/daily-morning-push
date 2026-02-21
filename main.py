@@ -1,15 +1,23 @@
 import os
 import requests
 
+# 👇 【非常重要】把你刚才复制的 API Host 粘贴在下面引号里！
+# 例如：API_HOST = "abc1234xyz.def.qweatherapi.com"
+API_HOST = "nk63ywyj8d.re.qweatherapi.com"
+
 def get_weather(location, key):
-    url = f"https://devapi.qweather.com/v7/weather/3d?location={location}&key={key}"
+    # 这里已经换成了你的专属通道
+    url = f"https://{API_HOST}/v7/weather/3d?location={location}&key={key}"
     try:
-        res = requests.get(url)
-        # 暴力截取前 30 个字符，看看它到底回了什么鬼东西
-        raw_text = res.text[:30]
-        return f"状态码{res.status_code}:{raw_text}", "未知"
+        response = requests.get(url).json()
+        if str(response.get("code")) == "200":
+            daily = response["daily"][0] # 获取今天的数据
+            weather = daily["textDay"]
+            temp = f"{daily['tempMin']}~{daily['tempMax']}度"
+            return weather, temp
+        return f"接口错误码:{response.get('code')}", "未知"
     except Exception as e:
-        return "代码内部错误", "未知"
+        return "请求出错了", "未知"
 
 def main():
     app_id = os.environ.get("APP_ID")
@@ -18,14 +26,22 @@ def main():
     template_id = os.environ.get("TEMPLATE_ID")
     qweather_key = os.environ.get("QWEATHER_KEY")
 
+    if API_HOST == "请替换成你的API_HOST":
+        print("等一下！你忘记在代码里填入 API Host 啦！")
+        return
+
+    # 获取维也纳和杭州天气
     vie_weather, vie_temp = get_weather("16.37,48.20", qweather_key)
     hz_weather, hz_temp = get_weather("101210101", qweather_key)
 
+    # 获取微信钥匙
     token_url = f"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={app_id}&secret={app_secret}"
     access_token = requests.get(token_url).json().get("access_token")
     if not access_token:
+        print("获取微信Token失败！")
         return
 
+    # 发送推送
     send_url = f"https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={access_token}"
     payload = {
         "touser": open_id,
@@ -37,6 +53,7 @@ def main():
             "hz_temp": {"value": hz_temp, "color": "#173177"}
         }
     }
+    
     requests.post(send_url, json=payload)
 
 if __name__ == "__main__":
