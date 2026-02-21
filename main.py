@@ -63,6 +63,15 @@ def main():
     if not access_token:
         return
 
+    # 【重点在这里】把名单用逗号切开，变成一个列表
+    open_ids = open_id_str.split(",")
+
+    for single_open_id in open_ids:
+        # 清除可能不小心打进去的空格
+        single_open_id = single_open_id.strip() 
+        if not single_open_id:
+            continue
+            
     # 组装并发送消息
     send_url = f"https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={access_token}"
     payload = {
@@ -80,6 +89,7 @@ def main():
     }
     
     requests.post(send_url, json=payload)
+    print(f"成功发送给：{single_open_id}")
 
 if __name__ == "__main__":
     main()
