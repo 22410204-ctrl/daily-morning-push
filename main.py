@@ -2,6 +2,7 @@ import os
 import requests
 import random
 
+# 👇 【非常重要】记得填上你的 API_HOST
 API_HOST = "nk63ywyj8d.re.qweatherapi.com"
 
 def get_weather(location, key):
@@ -42,13 +43,11 @@ def get_daily_quote():
         source = res.get("from", "佚名")
         return f"{text} ——《{source}》"
     except:
-        # 万一网络出问题，兜底发一句暖心的话
-        return "如果再也不能见到你，祝你早安，午安，晚安。"
+        return "想念你的每一天，都是好天气。 ——《专属留言》"
 
 def main():
     app_id = os.environ.get("APP_ID")
     app_secret = os.environ.get("APP_SECRET")
-    # 这里获取到的是 "你的ID,朋友的ID" 这样的字符串
     open_id_str = os.environ.get("OPEN_ID") 
     template_id = os.environ.get("TEMPLATE_ID")
     qweather_key = os.environ.get("QWEATHER_KEY")
@@ -59,21 +58,21 @@ def main():
     vie_aqi = get_aqi("48.20", "16.37", qweather_key)
     hz_aqi = get_aqi("30.28", "120.15", qweather_key)
 
-    # =============== 新增区域 ===============
-    # 获取每日一句
-    quote_str = get_daily_quote()
-
+    # =============== 破解微信截断限制 ===============
+    full_quote = get_daily_quote()
+    # 我们把获取到的长句子，每 18 个字切一刀，分装到三个坑位里！
+    quote_part1 = full_quote[:18] 
+    quote_part2 = full_quote[18:36] 
+    quote_part3 = full_quote[36:54] 
+    
     # 随机德语祝福盲盒
     german_blessings = [
-        "Ich wünsche dir einen schönen Tag.",
-        "Jeder Tag ist ein neuer Anfang.",
-        "Glaube an dich selbst!",
-        "Mach das Beste aus diesem Tag!",
-        "Wenn du es wirklich willst, kannst du alles schaffen.",
-        "Am Ende wird alles gut. Und wenn es nicht gut ist, dann ist es noch nicht das Ende.",
-        "Lächle, das Leben ist schön!",
-        "Du bist großartig, genau so wie du bist.",
-        "Egal, was die Zukunft bringt, du wirst immer geliebt."
+        "Ich wünsche dir einen schönen Tag. (祝你度过愉快的一天。)",
+        "Jeder Tag ist ein neuer Anfang. (每一天都是新的开始。)",
+        "Glaube an dich selbst! (相信你自己！)",
+        "Mach das Beste aus diesem Tag! (充实地度过今天吧！)",
+        "Träume nicht dein Leben, sondern lebe deinen Traum. (不要只梦想要怎样的生活，要去实现你的梦想。)",
+        "Lächle, das Leben ist schön! (微笑吧，生活多美好！)"
     ]
     blessing_str = random.choice(german_blessings)
     # ========================================
@@ -85,12 +84,9 @@ def main():
         print("获取 Token 失败")
         return
 
-    # 【重点在这里】把名单用逗号切开，变成一个列表
     open_ids = open_id_str.split(",")
 
-    # 用 for 循环，给名单上的每个人挨个发消息
     for single_open_id in open_ids:
-        # 清除可能不小心打进去的空格
         single_open_id = single_open_id.strip() 
         if not single_open_id:
             continue
@@ -106,8 +102,10 @@ def main():
                 "hz_weather": {"value": hz_weather, "color": "#173177"},
                 "hz_temp": {"value": hz_temp, "color": "#173177"},
                 "hz_aqi": {"value": hz_aqi, "color": "#008000"},
-                "daily_quote": {"value": quote_str, "color": "#FF8C00"},       # 橙色显示每日一句
-                "german_blessing": {"value": blessing_str, "color": "#FF69B4"} # 粉色显示德语
+                "quote1": {"value": quote_part1, "color": "#FF8C00"},       
+                "quote2": {"value": quote_part2, "color": "#FF8C00"},       
+                "quote3": {"value": quote_part3, "color": "#FF8C00"},       
+                "german_blessing": {"value": blessing_str, "color": "#FF69B4"} 
             }
         }
         requests.post(send_url, json=payload)
