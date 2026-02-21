@@ -43,7 +43,7 @@ def get_daily_quote():
         source = res.get("from", "佚名")
         return f"{text} ——《{source}》"
     except:
-        return "想念你的每一天，都是好天气。 ——《专属留言》"
+        return "如果再也不能见到你，祝你早安，午安，晚安。"
 
 def main():
     app_id = os.environ.get("APP_ID")
@@ -67,12 +67,15 @@ def main():
     
     # 随机德语祝福盲盒
     german_blessings = [
-        "Ich wünsche dir einen schönen Tag. (祝你度过愉快的一天。)",
-        "Jeder Tag ist ein neuer Anfang. (每一天都是新的开始。)",
-        "Glaube an dich selbst! (相信你自己！)",
-        "Mach das Beste aus diesem Tag! (充实地度过今天吧！)",
-        "Träume nicht dein Leben, sondern lebe deinen Traum. (不要只梦想要怎样的生活，要去实现你的梦想。)",
-        "Lächle, das Leben ist schön! (微笑吧，生活多美好！)"
+        "Ich wünsche dir einen schönen Tag.",
+        "Jeder Tag ist ein neuer Anfang.",
+        "Glaube an dich selbst!",
+        "Mach das Beste aus diesem Tag!",
+        "Wenn du es wirklich willst, kannst du alles schaffen.",
+        "Am Ende wird alles gut. Und wenn es nicht gut ist, dann ist es noch nicht das Ende.",
+        "Lächle, das Leben ist schön!",
+        "Du bist großartig, genau so wie du bist.",
+        "Egal, was die Zukunft bringt, du wirst immer geliebt." 
     ]
     blessing_str = random.choice(german_blessings)
     # ========================================
