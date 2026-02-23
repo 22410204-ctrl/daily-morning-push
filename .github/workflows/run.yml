@@ -1,13 +1,13 @@
 name: Daily Morning Push
-
 on:
   workflow_dispatch: # 允许你随时手动点击运行测试
-    schedule:
+  schedule:
     - cron: '20 4 * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
