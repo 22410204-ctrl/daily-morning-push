@@ -2,7 +2,7 @@ name: Daily Morning Push
 on:
   workflow_dispatch: # 允许你随时手动点击运行测试
   schedule:
-    - cron: '30 0 * * *'
+    - cron: '30 23 * * *'
 
 jobs:
   build:
