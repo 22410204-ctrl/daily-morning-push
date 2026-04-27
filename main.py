@@ -36,7 +36,7 @@ def get_aqi(lat, lon, key):
 
 def get_daily_quote():
     # 调用免费"一言"API获取随机语录 (c=h影视, c=d文学, c=k哲学)
-    url = "https://v1.hitokoto.cn/?c=h&c=d&c=k"
+    url = "https://v1.hitokoto.cn/?c=d&c=k"
     try:
         res = requests.get(url, timeout=5).json()
         text = res.get("hitokoto", "")
@@ -57,7 +57,8 @@ def main():
     hz_weather, hz_temp = get_weather("101210101", qweather_key)
     vie_aqi = get_aqi("48.20", "16.37", qweather_key)
     hz_aqi = get_aqi("30.28", "120.15", qweather_key)
-
+    blr_weather, blr_temp = get_weather("77.59,12.97", qweather_key)
+    blr_aqi = get_aqi("12.97", "77.59", qweather_key)
     # =============== 破解微信截断限制 ===============
     full_quote = get_daily_quote()
     # 我们把获取到的长句子，每 18 个字切一刀，分装到三个坑位里！
@@ -105,6 +106,9 @@ def main():
                 "hz_weather": {"value": hz_weather, "color": "#173177"},
                 "hz_temp": {"value": hz_temp, "color": "#173177"},
                 "hz_aqi": {"value": hz_aqi, "color": "#008000"},
+                "blr_weather": {"value": blr_weather, "color": "#173177"},
+                "blr_temp": {"value": blr_temp, "color": "#173177"},
+                "blr_aqi": {"value": blr_aqi, "color": "#008000"},
                 "quote1": {"value": quote_part1, "color": "#FF8C00"},       
                 "quote2": {"value": quote_part2, "color": "#FF8C00"},       
                 "quote3": {"value": quote_part3, "color": "#FF8C00"},       
