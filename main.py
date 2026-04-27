@@ -6,7 +6,7 @@ import random
 API_HOST = "nk63ywyj8d.re.qweatherapi.com"
 
 def get_weather(location, key):
-    url = f"https://{API_HOST}/v7/weather/3d?location={location}&key={key}"
+    url = f"https://{API_HOST}/v7/weather/3d?location={location}&key={key}&lang=zh"
     try:
         response = requests.get(url).json()
         if str(response.get("code")) == "200":
@@ -58,7 +58,7 @@ def main():
     vie_aqi = get_aqi("48.20", "16.37", qweather_key)
     hz_aqi = get_aqi("30.28", "120.15", qweather_key)
     blr_weather, blr_temp = get_weather("77.59,12.97", qweather_key)
-    blr_aqi = get_aqi("12.97", "77.59", qweather_key)
+    blr_aqi = "" # 这里设为空，配合下一步修改模板
     # =============== 破解微信截断限制 ===============
     full_quote = get_daily_quote()
     # 我们把获取到的长句子，每 18 个字切一刀，分装到三个坑位里！
